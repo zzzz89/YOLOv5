@@ -32,8 +32,8 @@ from utils.torch_utils import load_classifier, select_device, time_sync
 
 
 @torch.no_grad()
-def run(weights=ROOT / 'yolov5s.pt',  # 模型路径
-        source=ROOT / 'data/images',  # file/dir/URL/glob, 0 for webcam
+def run(weights=ROOT / 'runs/train/exp/weights/best.pt',  # 模型路径
+        source=ROOT / 'source_files/hardhat.mp4',  # file/dir/URL/glob, 0 for webcam
         imgsz=640,  # 推理图像大小（像素）
         conf_thres=0.25,  # 置信度阈值
         iou_thres=0.45,  # 非极大值抑制（NMS）IOU 阈值
@@ -359,7 +359,7 @@ def run(weights=ROOT / 'yolov5s.pt',  # 模型路径
 def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'runs/train/exp/weights/best.pt', help='model path(s)')  # weights: 模型的权重地址 默认 weights/best.pt
-    parser.add_argument('--source', type=str, default=ROOT / 'source_files/construction-safety.jpg', help='file/dir/URL/glob, 0 for webcam')  # source: 测试数据文件(图片或视频)的保存路径 默认data/images
+    parser.add_argument('--source', type=str, default=ROOT / 'source_files/hardhat.mp4', help='file/dir/URL/glob, 0 for webcam')  # source: 测试数据文件(图片或视频)的保存路径
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[608], help='inference size h,w')  # imgsz: 网络输入图片的大小 默认640
     parser.add_argument('--conf-thres', type=float, default=0.5, help='confidence threshold')  # conf-thres: object置信度阈值 默认0.25
     parser.add_argument('--iou-thres', type=float, default=0.45, help='NMS IoU threshold')  # iou-thres: 做nms的iou阈值 默认0.45
