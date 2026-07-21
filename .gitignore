@@ -1,0 +1,60 @@
+# ===== Git / IDE =====
+.git/
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# ===== Dataset (too large) =====
+**/VOCdevkit/
+**/datasets/
+yolo_train.txt
+yolo_val.txt
+
+# ===== Weights & checkpoints =====
+**/weights/
+**/*.pt
+**/*.pth
+**/*.onnx
+**/*.engine
+**/*.mlmodel
+**/*.torchscript
+
+# ===== Training / detect outputs =====
+**/runs/
+**/wandb/
+
+# ===== Caches & logs =====
+*.cache
+*.cache.npy
+*.log
+
+# ===== Media / archives (optional local stuff) =====
+*.zip
+*.rar
+*.7z
+*.mp4
+*.avi
+*.mov
+*.docx
+*.doc
+
+# ===== OS =====
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ===== Source pack folder (local materials) =====
+源码v5/
