@@ -363,7 +363,7 @@ def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', type=str, default=ROOT / 'data/VOC-hat.yaml', help='dataset.yaml path')  # 数据集配置文件地址 包含数据集的路径、类别个数、类名、下载地址等信息
     parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'runs/train/exp/weights/best.pt', help='model.pt path(s)')   #  模型的权重文件地址 weights
-    parser.add_argument('--batch-size', type=int, default=32, help='batch size')   # 前向传播的批次大小 默认32
+    parser.add_argument('--batch-size', type=int, default=8, help='batch size')   # 前向传播的批次大小 默认32
     parser.add_argument('--imgsz', '--img', '--img-size', type=int, default=608, help='inference size (pixels)')  #  输入网络的图片分辨率 默认640
     parser.add_argument('--conf-thres', type=float, default=0.5, help='confidence threshold')  # object置信度阈值 默认0.25
     parser.add_argument('--iou-thres', type=float, default=0.6, help='NMS IoU threshold')  # 进行NMS时IOU的阈值 默认0.6

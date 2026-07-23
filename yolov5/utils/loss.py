@@ -222,7 +222,7 @@ class ComputeLoss:
 
             # 追加目标信息
             a = t[:, 6].long()  # 锚框索引
-            indices.append((b, a, gj.clamp_(0, gain[3] - 1), gi.clamp_(0, gain[2] - 1)))  # 保存图像、锚框和网格索引
+            indices.append((b, a, gj.clamp_(0, gain[3].long() - 1), gi.clamp_(0, gain[2].long() - 1)))  # 保存图像、锚框和网格索引 (PyTorch 2.x 兼容)
             tbox.append(torch.cat((gxy - gij, gwh), 1))  # 保存边界框信息
             anch.append(anchors[a])  # 保存锚框
             tcls.append(c)  # 保存类别

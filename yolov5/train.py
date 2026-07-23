@@ -21,7 +21,6 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 import yaml
-from torch.cuda import amp
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.optim import Adam, SGD, lr_scheduler
 from tqdm import tqdm
@@ -306,7 +305,7 @@ def train(hyp,  # path/to/hyp.yaml 或者超参数字典
     results = (0, 0, 0, 0, 0, 0, 0)  # P, R, mAP@.5, mAP@.5-.95, val_loss(box, obj, cls)
 
     scheduler.last_epoch = start_epoch - 1  # 设置调度器的最后epoch为当前epoch之前
-    scaler = amp.GradScaler(enabled=cuda)  # 初始化混合精度训练的梯度缩放器
+    scaler = torch.amp.GradScaler('cuda', enabled=cuda)  # 初始化混合精度训练的梯度缩放器
     stopper = EarlyStopping(patience=opt.patience)  # 初始化早停机制，设定耐心值
     compute_loss = ComputeLoss(model)  # 初始化损失计算类
 
@@ -361,7 +360,7 @@ def train(hyp,  # path/to/hyp.yaml 或者超参数字典
                     imgs = nn.functional.interpolate(imgs, size=ns, mode='bilinear', align_corners=False)  # 重新调整图像大小
 
             # 前向传播
-            with amp.autocast(enabled=cuda):  # 使用混合精度训练
+            with torch.amp.autocast('cuda', enabled=cuda):  # 使用混合精度训练
                 pred = model(imgs)  # 前向传播得到预测
                 loss, loss_items = compute_loss(pred, targets.to(device))  # 计算损失
                 if RANK != -1:
@@ -482,12 +481,12 @@ def parse_opt(known=False):
     """
     parser = argparse.ArgumentParser()
     # --------------------------------------------------- 常用参数 ---------------------------------------------
-    parser.add_argument('--weights', type=str, default=ROOT / 'weights/yolov5s.pt', help='initial weights path')  # weights: 权重文件
-    parser.add_argument('--cfg', type=str, default='models/yolov5s.yaml', help='model.yaml path')  # cfg: 网络模型配置文件 包括nc、depth_multiple、width_multiple、anchors、backbone、head等
+    parser.add_argument('--weights', type=str, default=ROOT / 'weights/yolov5x.pt', help='initial weights path')  # weights: 权重文件
+    parser.add_argument('--cfg', type=str, default='models/yolov5x.yaml', help='model.yaml path')  # cfg: 网络模型配置文件 包括nc、depth_multiple、width_multiple、anchors、backbone、head等
     parser.add_argument('--data', type=str, default=ROOT / 'data/VOC-hat.yaml', help='dataset.yaml path')  # data: 实现数据集配置文件 包括path、train、val、test、nc、names等
     parser.add_argument('--hyp', type=str, default=ROOT / 'data/hyps/hyp.scratch.yaml', help='hyperparameters path')  # hyp: 训练时的超参文件
-    parser.add_argument('--epochs', type=int, default=100)  # epochs: 训练轮次
-    parser.add_argument('--batch-size', type=int, default=64, help='total batch size for all GPUs')  # batch-size: 训练批次大小
+    parser.add_argument('--epochs', type=int, default=60)  # epochs: 训练轮次
+    parser.add_argument('--batch-size', type=int, default=4, help='total batch size for all GPUs')  # batch-size: 训练批次大小
     parser.add_argument('--imgsz', '--img', '--img-size', type=int, default=608, help='train, val image size (pixels)')  # imgsz: 输入网络的图片分辨率大小
     parser.add_argument('--rect', action='store_true', help='rectangular training')  # rect: 是否采用Rectangular training/inference，一张图片为长方形，我们在将其送入模型前需要将其resize到要求的尺寸，所以我们需要通过补灰padding来变为正方形的图。
     parser.add_argument('--resume', nargs='?', const=True, default="", help='resume most recent training')  # resume: 断点续训, 从上次打断的训练结果处接着训练  默认False
